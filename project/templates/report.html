@@ -1,0 +1,300 @@
+<html>
+    <head>
+        <title>pdf report</title>
+        <style>
+            @page{
+                @top-left{
+                    background: #82b965;
+                    content: counter(page);
+                    height: 1cm;
+                    text-align: center;
+                    width: 1cm;
+                }
+                @top-center{
+                    background: #82b965;
+                    content: '';
+                    height: 0.05cm;
+                    display: block;
+                    width: 100%;
+                    opacity: 0.5;
+                }
+                @top-right{
+                    font-size: 9pt;
+                    content: string(heading);
+                    height: 1cm;
+                    vertical-align: middle;
+                    width: 100%;
+                }
+            }
+            @page :first{
+                background-size: cover;
+                margin: 0;
+            }
+            #cover {
+                align-content: space-between;
+                display: flex;
+                flex-wrap: wrap;
+                text-align: center;
+                height: 297mm;
+            }
+            #contents {
+                align-content: center;
+            }
+            html{
+                color: #393939;
+                font-family: "Noto sans",sans-serif;
+                font-size: 11pt;
+                font-weight: 300;
+                line-height: 1.5;
+            }
+            #cover h1{
+                margin-top: 270px;
+                margin-left: 240px;
+            }
+            h2{
+                margin-top: 20px;
+                margin-left: 240px;
+            }
+            h3{
+                margin-top: 100px;
+                margin-left: 240px;
+            }
+            article{
+                page-break-after: always;
+            }
+            p{
+                display: block;
+                text-align: center;
+                margin-left: 80px;
+            }
+            th, td {
+                width: 50%;
+                border: 1px solid black;
+                border-collapse: collapse;
+              }
+            .fl-table {
+                border-radius: 5px;
+                font-size: 12px;
+                font-weight: normal;
+                border: none;
+                border-collapse: collapse;
+                width: 100%;
+                max-width: 100%;
+                white-space: nowrap;
+                background-color: white;
+            }
+            
+            .fl-table td, .fl-table th {
+                text-align: center;
+                padding: 8px;
+            }
+            
+            .fl-table td {
+                border-right: 1px solid #f8f8f8;
+                font-size: 12px;
+            }
+            
+            .fl-table thead th {
+                color: #ffffff;
+                background: #4FC3A1;
+            }
+            
+            
+            .fl-table thead th:nth-child(odd) {
+                color: #ffffff;
+                background: #324960;
+            }
+            
+            .fl-table tr:nth-child(even) {
+                background: #F8F8F8;
+            }
+            
+            /* Responsive */
+            
+            @media (max-width: 767px) {
+                .fl-table {
+                    display: block;
+                    width: 100%;
+                }
+                .table-wrapper:before{
+                    content: "Scroll horizontally >";
+                    display: block;
+                    text-align: right;
+                    font-size: 11px;
+                    color: white;
+                    padding: 0 0 10px;
+                }
+                .fl-table thead, .fl-table tbody, .fl-table thead th {
+                    display: block;
+                }
+                .fl-table thead th:last-child{
+                    border-bottom: none;
+                }
+                .fl-table thead {
+                    float: left;
+                }
+                .fl-table tbody {
+                    width: auto;
+                    position: relative;
+                    overflow-x: auto;
+                }
+                .fl-table td, .fl-table th {
+                    padding: 20px .625em .625em .625em;
+                    height: 60px;
+                    vertical-align: middle;
+                    box-sizing: border-box;
+                    overflow-x: hidden;
+                    overflow-y: auto;
+                    width: 120px;
+                    font-size: 13px;
+                    text-overflow: ellipsis;
+                }
+                .fl-table thead th {
+                    text-align: left;
+                    border-bottom: 1px solid #f7f7f9;
+                }
+                .fl-table tbody tr {
+                    display: table-cell;
+                }
+                .fl-table tbody tr:nth-child(odd) {
+                    background: none;
+                }
+                .fl-table tr:nth-child(even) {
+                    background: transparent;
+                }
+                .fl-table tr td:nth-child(odd) {
+                    background: #F8F8F8;
+                    border-right: 1px solid #E6E4E4;
+                }
+                .fl-table tr td:nth-child(even) {
+                    border-right: 1px solid #E6E4E4;
+                }
+                .fl-table tbody td {
+                    display: block;
+                    text-align: center;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <article id="cover">
+            <div>
+                <h1>MONTHLY REPORT</h1>
+                <h2>{{ data['month'] }} {{ data['previous'][0:4] }}</h2>
+                <h3>Name: {{ data['user'][0][1] }}</h3>
+            </div>
+        </article>
+        <article id="contents">
+            {% if data['lists']!=[] %}
+                <h2>Lists</h2><br>
+                <div>A total of {{ data['lists']|length }} lists were created in past month</div>
+                <p>
+                    <table class="fl-table">
+                        <thead>
+                            <th>List names</th>
+                            <th>Create Date</th>
+                        </thead>
+                        <tbody>
+                            {% for i in data['lists'] %}
+                                <tr>
+                                    <td>{{ i[1] }}</td>
+                                    <td>{{ i[-1] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </p>
+            {% else %}
+                <br><h4>No Lists were created in past month</h4><br>
+            {% endif %}
+            {% if data['cards']['all']!=[] %}
+                <h2>Cards</h2><br>
+                <div>A total of {{ data['cards']['all']|length }} cards were created in past month</div>
+                <p>
+                    <table class="fl-table">
+                        <thead>
+                            <th>Card names</th>
+                            <th>Parent list</th>
+                            <th>Create Date</th>
+                        </thead>
+                        <tbody>
+                            {% for i in data['cards']['all'] %}
+                                <tr>
+                                    <td>{{ i[1] }}</td>
+                                    {% for j in data['lists'] %}
+                                        {% if j[0]==i[3] %}
+                                            <td>{{ j[1] }}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <td>{{ i[-1] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </p>
+            {% else %} 
+                <br><h4>No cards were created in past month</h4><br>
+            {% endif %}
+        </article>
+        <article id="contents">
+            <h2>Passed deadline</h2><br>
+            <p>
+            {% if data['cards']['passed']!=[] %}
+                <table class="fl-table">
+                    <thead>
+                        <th>Card names</th>
+                        <th>Parent list</th>
+                        <th>Deadline</th>
+                        <th>Create Date</th>
+                    </thead>
+                    <tbody>
+                        {% for i in data['cards']['passed'] %}
+                            <tr>
+                                <td>{{ i[1] }}</td>
+                                {% for j in data['lists'] %}
+                                    {% if j[0]==i[3] %}
+                                        <td>{{ j[1] }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                                <td>{{ i[4] }}</td>
+                                <td>{{ i[-1] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p><h3>No cards crossed the deadline</h3></p>
+            {% endif %}
+            </p><br>
+            <h2>Completed</h2><br>
+            <p>
+            {% if data['cards']['completed']!=[] %}
+                <table class="fl-table">
+                    <thead>
+                        <th>Card names</th>
+                        <th>Parent list</th>
+                        <th>Completed on</th>
+                        <th>Create Date</th>
+                    </thead>
+                    <tbody>
+                        {% for i in data['cards']['completed'] %}
+                            <tr>
+                                <td>{{ i[1] }}</td>
+                                {% for j in data['lists'] %}
+                                    {% if j[0]==i[3] %}
+                                        <td>{{ j[1] }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                                <td>{{ i[-2] }}</td>
+                                <td>{{ i[-1] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <b>No cards were completed</b>
+            {% endif %}
+            </p>
+        </article>
+    </body>
+</html>
